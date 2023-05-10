@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,6 +15,16 @@ public class Main {
     }
 
     void run(Scanner scanner) {
+        try {
+            Map<String, Country> countryMap = readFileAndReturnMap();
+            printCountryInfoByCode(scanner, countryMap);
+        } catch (IOException e) {
+            System.out.println("Brak pliku countries.csv.");
+        }
+        // uzupełnij metodę
+    }
+
+    private static Map<String, Country> readFileAndReturnMap() throws IOException {
         Map<String, Country> countryMap = new HashMap<>();
         try (var fileReader = new BufferedReader(new FileReader("countries.csv"))
         ) {
@@ -24,18 +33,17 @@ public class Main {
                 String[] split = text.split(";");
                 countryMap.put(split[0], new Country(split[0], split[1], Integer.parseInt(split[2])));
             }
-            System.out.println("Podaj kod kraju");
-            String code = scanner.nextLine().toUpperCase();
-            if (countryMap.get(code) == null) {
-                System.out.println("Kod kraju " + code + " nie został znaleziony.");
-            } else {
-                System.out.println(countryMap.get(code));
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Brak pliku countries.csv.");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
-        // usupełnij metodę
+        return countryMap;
+    }
+
+    private static void printCountryInfoByCode(Scanner scanner, Map<String, Country> countryMap) {
+        System.out.println("Podaj kod kraju");
+        String code = scanner.nextLine().toUpperCase();
+        if (countryMap.get(code) == null) {
+            System.out.println("Kod kraju " + code + " nie został znaleziony.");
+        } else {
+            System.out.println(countryMap.get(code));
+        }
     }
 }
